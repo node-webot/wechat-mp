@@ -52,41 +52,42 @@ function getXML(info){
 //测试编码/解码
 describe('xml2json', function(){
   var bodyParser = mp.bodyParser();
-  var mockReq, mockRes;
+  var req, res;
 
   beforeEach(function(){
-    mockReq = {
+    req = {
       setEncoding: noop,
       wx_data: null,
       on: noop
     };
-    mockRes = {};
+    res = {};
   });
 
-  it('should pass text', function(){
+  it('should pass text', function(done){
     var info = {
       type: 'text',
       text: 'hi'
     };
-    mockReq.on = function(e, cb){
+    req.on = function(e, cb){
       if(e == 'data'){
         cb(getXML(info));
       }else if(e == 'end'){
         cb();
       }
     };
-    bodyParser(mockReq, mockRes, function(err){
-      should.exist(mockReq.wx_data);
-      should.ok(mockReq.wx_data.created);
-      mockReq.wx_data.created.should.be.an.instanceof(Date);
-      should.equal(mockReq.wx_data.sp, info.sp);
-      should.equal(mockReq.wx_data.uid, info.uid);
-      should.equal(mockReq.wx_data.type, info.type);
-      should.equal(mockReq.wx_data.text, info.text);
+    bodyParser(req, res, function(err){
+      should.exist(req.wx_data);
+      should.ok(req.wx_data.created);
+      req.wx_data.created.should.be.an.instanceof(Date);
+      should.equal(req.wx_data.sp, info.sp);
+      should.equal(req.wx_data.uid, info.uid);
+      should.equal(req.wx_data.type, info.type);
+      should.equal(req.wx_data.text, info.text);
+      done();
     });
   });
 
-  it('should pass location', function(){
+  it('should pass location', function(done){
     var info = {
       type: 'location',
       lat: '23.08',
@@ -94,91 +95,126 @@ describe('xml2json', function(){
       scale: '20',
       label: 'this is a location'
     };
-    mockReq.on = function(e, cb){
+    req.on = function(e, cb){
       if(e == 'data'){
         cb(getXML(info));
       }else if(e == 'end'){
         cb();
       }
     };
-    bodyParser(mockReq, mockRes, function(err){
-      should.exist(mockReq.wx_data);
-      should.exist(mockReq.wx_data.param);
-      should.equal(mockReq.wx_data.original.MsgType, info.type);
-      should.equal(mockReq.wx_data.original.Location_X, info.lat);
-      should.equal(mockReq.wx_data.param.lng, info.lng);
-      should.equal(mockReq.wx_data.param.scale, info.scale);
-      should.equal(mockReq.wx_data.param.label, info.label);
+    bodyParser(req, res, function(err){
+      should.exist(req.wx_data);
+      should.exist(req.wx_data.param);
+      should.equal(req.wx_data.original.MsgType, info.type);
+      should.equal(req.wx_data.original.Location_X, info.lat);
+      should.equal(req.wx_data.param.lng, info.lng);
+      should.equal(req.wx_data.param.scale, info.scale);
+      should.equal(req.wx_data.param.label, info.label);
+      done();
     });
   });
 
-  it('should pass image', function(){
+  it('should pass image', function(done){
     var info = {
       type: 'image',
       pic: 'http://example.com/pic.jpg'
     };
-    mockReq.on = function(e, cb){
+    req.on = function(e, cb){
       if(e == 'data'){
         cb(getXML(info));
       }else if(e == 'end'){
         cb();
       }
     };
-    bodyParser(mockReq, mockRes, function(err){
-      should.exist(mockReq.wx_data);
-      should.equal(mockReq.wx_data.type, info.type);
-      should.equal(mockReq.wx_data.param.picUrl, info.pic);
+    bodyParser(req, res, function(err){
+      should.exist(req.wx_data);
+      should.equal(req.wx_data.type, info.type);
+      should.equal(req.wx_data.param.picUrl, info.pic);
+      done();
     });
   });
 
-  it('should pass event', function(){
+  it('should pass event', function(done){
     var info = {
       type: 'event',
       event: 'click',
       eventKey: 'test_key',
     };
-    mockReq.on = function(e, cb){
+    req.on = function(e, cb){
       if(e == 'data'){
         cb(getXML(info));
       }else if(e == 'end'){
         cb();
       }
     };
-    bodyParser(mockReq, mockRes, function(err){
-      should.exist(mockReq.wx_data);
-      should.equal(mockReq.wx_data.param.event, info.event);
-      should.equal(mockReq.wx_data.param.eventKey, info.eventKey);
+    bodyParser(req, res, function(err){
+      should.exist(req.wx_data);
+      should.equal(req.wx_data.param.event, info.event);
+      should.equal(req.wx_data.param.eventKey, info.eventKey);
+      done();
     });
   });
 
-  it('should pass link', function(){
+  it('should pass link', function(done){
     var info = {
       type: 'link',
       title: 'Link title here',
       url: 'http://example.com/',
       description: 'Hahahah....',
     };
-    mockReq.on = function(e, cb){
+    req.on = function(e, cb){
       if(e == 'data'){
         cb(getXML(info));
       }else if(e == 'end'){
         cb();
       }
     };
-    bodyParser(mockReq, mockRes, function(err){
-      should.exist(mockReq.wx_data);
-      should.equal(mockReq.wx_data.param.title, info.title);
-      should.equal(mockReq.wx_data.param.url, info.url);
-      should.equal(mockReq.wx_data.param.description, info.description);
+    bodyParser(req, res, function(err){
+      should.exist(req.wx_data);
+      should.equal(req.wx_data.param.title, info.title);
+      should.equal(req.wx_data.param.url, info.url);
+      should.equal(req.wx_data.param.description, info.description);
+      done();
     });
   });
-  it('should return parser error', function(){
-    mockReq.on = function(e, cb){
+  it('should return parser error', function(done){
+    req.on = function(e, cb){
       cb();
     };
-    bodyParser(mockReq, mockRes, function(err){
+    bodyParser(req, res, function(err){
       should.exist(err);
+      done();
     });
+  });
+});
+
+describe('builder', function() {
+  var builder = mp.resBuilder();
+  var req, res;
+
+  beforeEach(function(){
+    req = {};
+    res = {
+      wx_data: {
+        sp: 'webot',
+        uid: 'user_here',
+        text: 'Hehehor'
+      },
+      send: noop,
+      type: noop,
+    };
+  });
+
+  it('should pass text reply', function(done) {
+    res.wx_data.reply = 'Hello';
+    res.send = function(str) {
+      mp.parseXml(str, {}, function(err, obj) {
+        should.not.exists(err);
+        should.equal(obj.original.Content, 'Hello');
+        done();
+      });
+    };
+    builder(req, res);
   });
 
 });
