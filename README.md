@@ -116,3 +116,7 @@ var reply = {
   pic: 'http://......'
 };
 ```
+
+## weixin-robot
+
+使用 [wexin-robot](https://github.com/node-webot/weixin-robot) 模块，更傻瓜化地定义自动回复功能。
