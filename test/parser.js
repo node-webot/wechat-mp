@@ -217,4 +217,61 @@ describe('builder', function() {
     builder(req, res);
   });
 
+  it('should pass object reply', function(done) {
+    res.wx_data.reply = {
+      url: 'http://example.com/',
+      title: 'Hello Title'
+    };
+    res.send = function(str) {
+      mp.parseXml(str, {}, function(err, obj) {
+        should.not.exists(err);
+        should.equal(obj.original.MsgType, 'news');
+        should.equal(obj.original.ArticleCount, '1');
+        should.equal(obj.original.Articles.item[0].Title, 'Hello Title');
+        done();
+      });
+    };
+    builder(req, res);
+  });
+
+  it('should pass multiple image-text message and object mapping', function(done) {
+    res.wx_data.reply = [{
+      url: 'http://example.com/',
+      book_title: 'Hello Title'
+    }, {
+      url: 'http://example.com/',
+      book_title: 'Hello Title2'
+    }];
+    builder = mp.resBuilder({
+      title: 'book_title'
+    });
+    res.send = function(str) {
+      mp.parseXml(str, {}, function(err, obj) {
+        should.not.exists(err);
+        should.equal(obj.original.MsgType, 'news');
+        should.equal(obj.original.ArticleCount, '2');
+        should.equal(obj.original.Articles.item[1].Title, 'Hello Title2');
+        done();
+      });
+    };
+    builder(req, res);
+  });
+
+  it('should pass music message', function(done) {
+    res.wx_data.reply = {
+      type: 'music',
+      MusicUrl: 'http://example.com/',
+      HQMusicUrl: 'http://example.com/hq.mp3',
+    };
+    res.send = function(str) {
+      mp.parseXml(str, {}, function(err, obj) {
+        should.not.exists(err);
+        should.equal(obj.original.MsgType, 'music');
+        should.equal(obj.original.HQMusicUrl, res.wx_data.reply.HQMusicUrl);
+        done();
+      });
+    };
+    builder(req, res);
+  });
+
 });

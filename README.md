@@ -24,10 +24,10 @@ app.post('/wechat', verify, mp.bodyParser(), function(req, res, next) {
 
 Hey, why don't you dive into the source code? It's pretty simple.
 
-### mp.bodyParser(_[options]_)
+### mp.bodyParser( *[options]* )
 
 `bodyParser()` will parse wechat request XML to a JavaScript object.
-and attach the result to `req.wx\_data`.
+and attach the result to **req.wx_data**.
 
 `data.original` will be the original object parsed by xml2js.
 Common parameters will be set as `data` properties directly.
@@ -73,8 +73,8 @@ the default mapping.
 
 Build a xml string for wechat server, and send it. 
 
-Just attrive the original `req.wx\_data`, set a `data.reply`,
-then attach it to `res.wx\_data`.
+Just attrive the original `req.wx_data`, set a `data.reply`,
+then attach it to `res.wx_data`.
 
 With different kind of `data.reply`, you can send different type of message.
 
@@ -86,3 +86,33 @@ With different kind of `data.reply`, you can send different type of message.
 
 You can set a mapping object/function to preprocess each item of an array of
 image-text message.
+
+`mapping` could be:
+
+- {Function}  对每一条图文消息（item）都执行 `mapping(item, i, info)`
+- {Object}    标准属性值与回复对象属性值的对应关系
+
+Example:
+
+```javascript
+var mapping = {
+  pic: 'image',
+  description: 'desc'
+};
+
+var reply = {
+  title: '《奇迹之书》',
+  url: 'http://book.douban.com/...',
+  author: '谁谁谁',
+  desc: '本书由谁谁谁编写',
+  image: 'http://......'
+};
+
+// reply will be
+{
+  title: '《奇迹之书》',
+  url: 'http://book.douban.com/...',
+  description: '本书由谁谁谁编写',
+  pic: 'http://......'
+};
+```
