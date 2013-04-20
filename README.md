@@ -1,4 +1,4 @@
-# wechat-mp 微信公众平台API辅助工具
+# wechat-mp 微信公众平台API辅助工具 [![Build Status](https://travis-ci.org/node-webot/wechat-mp.png?branch=master)](https://travis-ci.org/node-webot/wechat-mp)
 
 Utilities for wechat media platform.
 
