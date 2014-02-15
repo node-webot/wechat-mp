@@ -8,34 +8,27 @@ Utilities for wechat offical account API.
 var mp = require('wechat-mp')(process.env.WX_TOKEN);
 var app = require('express')();
 
-// set your wechat api token here.
-var verify = mp.checkSig(process.env.WX_TOKEN);
-
-app.use(mp.start(), function(req, res, next) {
+app.use('/wechat', mp.start())
+app.post('/wechat', function(req, res, next) {
 
   console.log(req.wx_data);
 
-  res.wx_data = {
+  res.body = {
     reply: 'Hi.'
     type: 'text';
   };
 
   next();
 }, mp.end());
-
-app.use('/wechat', mp)
 ```
 
 Add session support:
 
 ```
-app.use(mp.start())
+app.use('/wechat', mp.start())
 app.use(connect.cookieParser())
 app.use(connect.session({ store: ... }))
 ```
-
-The `mp.start` must goes before cookieParser.
-
 
 ### mp( *[options]* )
 
@@ -58,8 +51,9 @@ On What property of `res` and `req` do we need to attach wechat data to.
 
 #### options.session
 
-Set `options.session` to `true` to give session support for each wechat account subscriber.
-Or set it with your customed cookie key.
+Unless `options.session` is set to `false`,
+the `mp.start()` middleware will set `req.sessionID` and `req.sessionId`
+as `"wx.#{toUserName}.#{fromUserName}"`.
 
 
 ## weixin-robot
