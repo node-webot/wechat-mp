@@ -41,13 +41,7 @@ The token for wechat to check signature.
 
 Default: 'wx\_token'
 
-Will try get `req[tokenProp]` as token.
-
-#### options.prop
-
-Default: 'wx\_data'
-
-On What property of `res` and `req` do we need to attach wechat data to.
+Will try get `req[tokenProp]` as token. Good for dynamically set token.
 
 #### options.session
 
