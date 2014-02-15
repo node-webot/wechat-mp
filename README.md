@@ -1,121 +1,66 @@
 # wechat-mp 微信公众平台API辅助工具 [![Build Status](https://travis-ci.org/node-webot/wechat-mp.png?branch=master)](https://travis-ci.org/node-webot/wechat-mp)
 
-Utilities for wechat media platform.
+Utilities for wechat offical account API.
 
 ## Express Middlewares
 
 ```javascript
-var mp = require('wechat-mp');
+var mp = require('wechat-mp')(process.env.WX_TOKEN);
 var app = require('express')();
 
 // set your wechat api token here.
 var verify = mp.checkSig(process.env.WX_TOKEN);
 
-app.get('/wechat', verify);
-app.post('/wechat', verify, mp.bodyParser(), function(req, res, next) {
+app.use(mp.start(), function(req, res, next) {
+
   console.log(req.wx_data);
 
-  var data = req.wx_data;
+  res.wx_data = {
+    reply: 'Hi.'
+    type: 'text';
+  };
 
-  data.reply = 'Hi.';
-  res.wx_data = data;
-}, mp.resBuilder());
+  next();
+}, mp.end());
+
+app.use('/wechat', mp)
 ```
 
-Hey, why don't you dive into the source code? It's pretty simple.
+Add session support:
 
-### mp.bodyParser( *[options]* )
-
-`bodyParser()` will parse wechat request XML to a JavaScript object.
-and attach the result to **req.wx_data**.
-
-`data.original` will be the original object parsed by xml2js.
-Common parameters will be set as `data` properties directly.
-Parameters for different type of messages will be stored in
-`data.param`.
-
-For the convinience of integerating with [webot](https://github.com/node-webot/webot),
-all parameters will be mapped to more JavaScript like names.
-
-You can use `options.propMap` and `options.paramMap` to override
-the default mapping.
-
-#### options.propMap
-
-```javascript
-{
-    FromUserName: 'uid'
-  , ToUserName: 'sp'
-  , MsgId: 'id'
-  , MsgType: 'type'
-  , Content: 'text'
-};
+```
+app.use(mp.start())
+app.use(connect.cookieParser())
+app.use(connect.session({ store: ... }))
 ```
 
-#### options.paramMap
+The `mp.start` must goes before cookieParser.
 
-```javascript
-{
-    Location_X: 'lat'
-  , Location_Y: 'lng'
-  , Scale: 'scale'
-  , Label: 'label'
-  , PicUrl: 'picUrl'
-  , Event: 'event'
-  , EventKey: 'eventKey'
-  , Url: 'url'
-  , Title: 'title'
-  , Description: 'description'
-};
-```
 
-### mp.resBuilder([mapping])
+### mp( *[options]* )
 
-Build a xml string for wechat server, and send it. 
 
-Just attrive the original `req.wx_data`, set a `data.reply`,
-then attach it to `res.wx_data`.
+#### options.token
 
-With different kind of `data.reply`, you can send different type of message.
+The token for wechat to check signature.
 
-- **{Array}**   Multiple image-text message.
-- **{String}**  Simple text message.
-- **{Object}**  Return special type of message if `reply.type` is setted, otherwise return an image-text message. 
+#### options.tokenProp
 
-#### mapping
+Default: 'wx\_token'
 
-You can set a mapping object/function to preprocess each item of an array of
-image-text message.
+Will try get `req[tokenProp]` as token.
 
-`mapping` could be:
+#### options.prop
 
-- {Function}  对每一条图文消息（item）都执行 `mapping(item, i, info)`
-- {Object}    标准属性值与回复对象属性值的对应关系
+Default: 'wx\_data'
 
-Example:
+On What property of `res` and `req` do we need to attach wechat data to.
 
-```javascript
-var mapping = {
-  pic: 'image',
-  description: 'desc'
-};
+#### options.session
 
-var reply = {
-  title: '《奇迹之书》',
-  url: 'http://book.douban.com/...',
-  author: '谁谁谁',
-  desc: '本书由谁谁谁编写',
-  image: 'http://......'
-};
+Set `options.session` to `true` to give session support for each wechat account subscriber.
+Or set it with your customed cookie key.
 
-// reply will be
-{
-  title: '《奇迹之书》',
-  url: 'http://book.douban.com/...',
-  description: '本书由谁谁谁编写',
-  pic: 'http://......'
-};
-```
 
 ## weixin-robot
 
