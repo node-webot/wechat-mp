@@ -17,11 +17,11 @@ var app = require('express')();
 app.use('/wechat', mp.start())
 app.post('/wechat', function(req, res, next) {
 
-  console.log(req.wx_data);
+  console.log(req.body);
 
   res.body = {
-    reply: 'Hi.'
-    type: 'text';
+    content: 'Hi.'
+    msgType: 'text'
   };
 
   next();
