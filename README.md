@@ -51,16 +51,26 @@ Default: 'wx\_token'
 
 Will try get `req[tokenProp]` as token. Good for dynamically set token.
 
+#### options.dataProp
+
+Default: 'body'
+
+Will put parsed data on `req[dataProp]`. So you can access wechat request message via `req.body` or `req.wx_data`, etc.
+
 #### options.session
 
 Unless `options.session` is set to `false`,
 the `mp.start()` middleware will set `req.sessionID` and `req.sessionId`
-as `"wx.#{toUserName}.#{fromUserName}"`.
+as `"wx.#{toUserName}.#{fromUserName}"`. And it cannot be changed by any following middlewares.
 
 
 ## weixin-robot
 
 使用 [wexin-robot](https://github.com/node-webot/weixin-robot) 模块，更傻瓜化地定义自动回复功能。
+
+## 调试
+
+使用 [webot-cli](https://github.com/node-webot/webot-cli) 调试发送测试消息。
 
 
 ## License
