@@ -28,18 +28,15 @@ app.post('/wechat', function(req, res, next) {
 }, mp.end());
 ```
 
-Add session support:
-
-```
-app.use('/wechat', mp.start())
-app.use(connect.cookieParser())
-app.use(connect.session({ store: ... }))
-```
-
 如果要在 [koa](http://koajs.com/) 里使用，可尝试 [koa-wechat](https://www.npmjs.org/package/koa-wechat) 模块。
 
 
 ### mp( *[options]* )
+
+`options` can be either the token string or an object.
+You can use these options both when initialization(`mp = require('wechat-mp')(options)`)
+and `mp.start()`.
+
 
 #### options.token
 
@@ -61,8 +58,18 @@ Will put parsed data on `req[dataProp]`. So you can access wechat request messag
 
 Unless `options.session` is set to `false`,
 the `mp.start()` middleware will set `req.sessionID` and `req.sessionId`
-as `"wx.#{toUserName}.#{fromUserName}"`. And it cannot be changed by any following middlewares.
+to `"wx.#{toUserName}.#{fromUserName}"`.
+So you can use `req.session` to save information about one specific user.
 
+The `sessionId` cannot be changed by any other following middlewares.
+
+To make this work, `mp.start()` must go before express/connect's session middleware.
+
+```
+app.use('/wechat', mp.start())
+app.use(connect.cookieParser())
+app.use(connect.session({ store: ... }))
+```
 
 ## weixin-robot
 
