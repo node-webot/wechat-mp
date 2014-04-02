@@ -1,6 +1,6 @@
 {
   "name": "wechat-mp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": "git://github.com/node-webot/wechat-mp.git",
   "description": "Wechat open API utilities.",
   "author": "Jesse Yang <kissmud@gmail.com> (https://github.com/ktmud)",
