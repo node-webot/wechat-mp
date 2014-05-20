@@ -99,6 +99,31 @@ describe('wechat-mp', function() {
     test_send_message('', done)
   })
 
+
+  describe('render xml', function() {
+
+    it('should render news and not escape url "&amp;"', function(done) {
+      app.use(function(req, res, next) {
+        res.body = {
+          msgType: 'news',
+          content: [{
+            title: 'abc',
+            url: 'http://example.com/mpa?abc=c&d=f'
+          }]
+        }
+        next()
+      })
+      app.use(mp.end())
+      request.post('/')
+        .expect(200)
+        .end(function(req, res) {
+          res.text.should.include('<MsgType><![CDATA[news]]></MsgType>')
+          res.text.should.include('http://example.com/mpa?abc=c&d=f')
+          done()
+        })
+    })
+  })
+
   function test_valid_token(token, done) {
     return request.get('/')
       .addsig(token)
