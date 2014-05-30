@@ -122,6 +122,28 @@ describe('wechat-mp', function() {
           done()
         })
     })
+
+    it('should accept `reply.type` as msgType', function(done) {
+      app.use(function(req, res, next) {
+        res.body = {
+          type: 'music',
+          content: {
+            title: 'abc',
+            url: 'http://example.com/mpa?abc=c&d=f'
+          }
+        }
+        next()
+      })
+      app.use(mp.end())
+      request.post('/')
+        .expect(200)
+        .end(function(req, res) {
+          res.text.should.include('<MsgType><![CDATA[music]]></MsgType>')
+          res.text.should.include('http://example.com/mpa?abc=c&d=f')
+          done()
+        })
+    })
+
   })
 
   function test_valid_token(token, done) {
