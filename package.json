@@ -12,7 +12,7 @@
     "mocha": "*",
     "express": "*",
     "supertest": "*",
-    "should": "*"
+    "should": "^3.3.2"
   },
   "engines": {
     "node" : ">=0.6.0",

@@ -89,7 +89,7 @@ describe('wechat-mp', function() {
     request.post('/')
       .expect(200)
       .end(function(req, res) {
-        res.text.should.include('<![CDATA[abc]]>')
+        res.text.should.containDeep('<![CDATA[abc]]>')
         done()
       })
   })
@@ -117,8 +117,8 @@ describe('wechat-mp', function() {
       request.post('/')
         .expect(200)
         .end(function(req, res) {
-          res.text.should.include('<MsgType><![CDATA[news]]></MsgType>')
-          res.text.should.include('http://example.com/mpa?abc=c&d=f')
+          res.text.should.containDeep('<MsgType><![CDATA[news]]></MsgType>')
+          res.text.should.containDeep('http://example.com/mpa?abc=c&d=f')
           done()
         })
     })
@@ -138,8 +138,8 @@ describe('wechat-mp', function() {
       request.post('/')
         .expect(200)
         .end(function(req, res) {
-          res.text.should.include('<MsgType><![CDATA[music]]></MsgType>')
-          res.text.should.include('http://example.com/mpa?abc=c&d=f')
+          res.text.should.containDeep('<MsgType><![CDATA[music]]></MsgType>')
+          res.text.should.containDeep('http://example.com/mpa?abc=c&d=f')
           done()
         })
     })
