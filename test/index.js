@@ -99,6 +99,22 @@ describe('wechat-mp', function() {
     test_send_message('', done)
   })
 
+  it('should handle empty `reply.content`', function(done) {
+    app.use(function(req, res, next) {
+      res.body = {
+        content: ''
+      };
+      next();
+    });
+    app.use(mp.end());
+    request.post('/')
+      .expect(200)
+      .end(function(req, res) {
+        res.body.should.be.empty;
+        done();
+      });
+  })
+
 
   describe('render xml', function() {
 
